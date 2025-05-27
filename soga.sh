@@ -81,7 +81,7 @@ DeplaySoga() {
 	cd /opt/$name
 	printf "%s\n" \
 		"log_level=$log_level" \
-  		"log_file_dir=$log_file_dir" \
+  		"log_file_retention_days=1" \
 		"type=$type" \
 		"api=webapi" \
 		"webapi_url=$webapi_url" \
