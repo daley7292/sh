@@ -76,6 +76,7 @@ InstallDocker() {
 }
 
 DeplaySoga() {
+	rm -rf mkdir -p /opt/$name
 	mkdir -p /opt/$name
 	mkdir -p /opt/$name/config
 	cd /opt/$name
