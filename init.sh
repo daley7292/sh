@@ -114,6 +114,7 @@ cat  <<EOF >/etc/systemd/resolved.conf
 [Resolve]
 DNS=8.8.8.8
 FallbackDNS=8.8.4.4
+Cache=no
 EOF
 fi
 systemctl unmask systemd-resolved
