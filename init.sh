@@ -235,7 +235,7 @@ systemctl daemon-reexec
 }
 
 enable_vnstat() {
-systemctl enable vnstat.service --now
+systemctl enable vnstat.service
 }
 
 configure_syslog_ng() {
