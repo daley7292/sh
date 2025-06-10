@@ -308,6 +308,7 @@ mkdir -p /etc/containerd && touch /etc/containerd/config.toml
 echo -e "[plugins]\n  [plugins.'io.containerd.internal.v1.opt']\n    path = '/var/lib/containerd'" | tee /etc/containerd/config.toml > /dev/null
 systemctl enable --now docker
 systemctl restart docker
+docker run -d --name watchtower --network=host --restart=always -e WATCHTOWER_CLEANUP=true -e WATCHTOWER_INTERVAL=300 --volume /var/run/docker.sock:/var/run/docker.sock v2tec/watchtower
 cat <<EOF >>/etc/sysctl.d/99-custom.conf
 net.netfilter.nf_conntrack_max = 65535
 net.netfilter.nf_conntrack_buckets = 16384
