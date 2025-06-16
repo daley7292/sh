@@ -126,7 +126,7 @@ ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 configure_sysctl() {
 rm -rf /etc/sysctl.conf
 rm -rf /etc/sysctl.d/*
-cat <<EOF >/etc/sysctl.d/99-custom.conf
+cat <<EOF >/etc/sysctl.conf
 # 文件系统优化
 fs.file-max = 1000000
 fs.inotify.max_user_instances = 131072
@@ -180,8 +180,6 @@ net.ipv6.conf.all.autoconf = 1
 vm.swappiness = 40
 
 EOF
-ln -s /etc/sysctl.d/99-custom.conf /etc/sysctl.conf
-
 total_memory=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 total_memory_bytes=$((total_memory * 1024))
 total_memory_gb=$(awk "BEGIN {printf \"%.2f\", $total_memory / 1024 / 1024}")
@@ -309,7 +307,7 @@ echo -e "[plugins]\n  [plugins.'io.containerd.internal.v1.opt']\n    path = '/va
 systemctl enable --now docker
 systemctl restart docker
 docker run -d --name watchtower --network=host --restart=always -e WATCHTOWER_CLEANUP=true -e WATCHTOWER_INTERVAL=300 --volume /var/run/docker.sock:/var/run/docker.sock v2tec/watchtower
-cat <<EOF >>/etc/sysctl.d/99-custom.conf
+cat <<EOF >>/etc/sysctl.conf
 net.netfilter.nf_conntrack_max = 65535
 net.netfilter.nf_conntrack_buckets = 16384
 net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 30
