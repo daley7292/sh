@@ -200,6 +200,7 @@ elif [[ ${total_memory_gb//.*/} -ge 25 && ${total_memory_gb//.*/} -lt 30 ]]; the
 else
   sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =6291456 8388608 16777216#g" /etc/sysctl.conf
 fi
+ln -s /etc/sysctl.conf /etc/sysctl.d/99-sysctl.conf
 sysctl -p &> /dev/null
 }
 
