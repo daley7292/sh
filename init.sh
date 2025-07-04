@@ -127,23 +127,16 @@ configure_sysctl() {
 rm -rf /etc/sysctl.conf
 rm -rf /etc/sysctl.d/*
 cat <<EOF >/etc/sysctl.d/99-custom.conf
-# 文件系统优化
 fs.file-max = 1000000
 fs.inotify.max_user_instances = 131072
-
-# 内核网络参数优化
 net.core.default_qdisc = fq
 net.core.somaxconn = 65535
-
-# IPv4 基础网络参数
 net.ipv4.conf.all.forwarding = 1
 net.ipv4.conf.all.rp_filter = 0
 net.ipv4.ip_forward = 1
 net.ipv4.route.flush = 1
 net.ipv4.ping_group_range = 0 2147483647
 net.ipv4.ip_local_port_range = 10000 49999
-
-# TCP 网络优化
 net.ipv4.tcp_congestion_control = bbr
 net.ipv4.tcp_low_latency = 1
 net.ipv4.tcp_no_metrics_save = 1
@@ -171,12 +164,8 @@ net.ipv4.tcp_fin_timeout = 15
 net.ipv4.tcp_keepalive_time = 30
 net.ipv4.tcp_keepalive_intvl = 15
 net.ipv4.tcp_keepalive_probes = 5
-
-# IPv6 网络配置
 net.ipv6.conf.all.accept_ra = 2
 net.ipv6.conf.all.autoconf = 1
-
-# 虚拟内存管理
 vm.swappiness = 40
 
 EOF
@@ -184,21 +173,21 @@ total_memory=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 total_memory_bytes=$((total_memory * 1024))
 total_memory_gb=$(awk "BEGIN {printf \"%.2f\", $total_memory / 1024 / 1024}")
 if [[ ${total_memory_gb//.*/} -lt 4 ]]; then    
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =262144 786432 2097152#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =262144 786432 2097152#g" /etc/sysctl.d/99-custom.conf
 elif [[ ${total_memory_gb//.*/} -ge 4 && ${total_memory_gb//.*/} -lt 7 ]]; then
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =524288 1048576 2097152#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =524288 1048576 2097152#g" /etc/sysctl.d/99-custom.conf
 elif [[ ${total_memory_gb//.*/} -ge 7 && ${total_memory_gb//.*/} -lt 11 ]]; then    
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =786432 1048576 3145728#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =786432 1048576 3145728#g" /etc/sysctl.d/99-custom.conf
 elif [[ ${total_memory_gb//.*/} -ge 11 && ${total_memory_gb//.*/} -lt 15 ]]; then    
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =1048576 1572864 3145728#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =1048576 1572864 3145728#g" /etc/sysctl.d/99-custom.conf
 elif [[ ${total_memory_gb//.*/} -ge 15 && ${total_memory_gb//.*/} -lt 20 ]]; then    
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =2097152 3145728 4194304#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =2097152 3145728 4194304#g" /etc/sysctl.d/99-custom.conf
 elif [[ ${total_memory_gb//.*/} -ge 20 && ${total_memory_gb//.*/} -lt 25 ]]; then    
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =3145728 4194304 8388608#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =3145728 4194304 8388608#g" /etc/sysctl.d/99-custom.conf
 elif [[ ${total_memory_gb//.*/} -ge 25 && ${total_memory_gb//.*/} -lt 30 ]]; then
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =6291456 8388608 16777216#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =6291456 8388608 16777216#g" /etc/sysctl.d/99-custom.conf
 else
-  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =6291456 8388608 16777216#g" /etc/sysctl.conf
+  sed -i "s#.*net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem =6291456 8388608 16777216#g" /etc/sysctl.d/99-custom.conf
 fi
 sysctl -p &> /dev/null
 }
@@ -320,8 +309,8 @@ total_memory_bytes=$((total_memory * 1024))
 total_memory_gb=$(awk "BEGIN {printf \"%.2f\", $total_memory / 1024 / 1024}")
 nf_conntrack_max=$((total_memory_bytes / 16384  ))
 nf_conntrack_buckets=$((nf_conntrack_max / 4))
-sed -i "s#.*net.netfilter.nf_conntrack_max = .*#net.netfilter.nf_conntrack_max = ${nf_conntrack_max}#g" /etc/sysctl.conf
-sed -i "s#.*net.netfilter.nf_conntrack_buckets = .*#net.netfilter.nf_conntrack_buckets = ${nf_conntrack_buckets}#g" /etc/sysctl.conf
+sed -i "s#.*net.netfilter.nf_conntrack_max = .*#net.netfilter.nf_conntrack_max = ${nf_conntrack_max}#g" /etc/sysctl.d/99-custom.conf
+sed -i "s#.*net.netfilter.nf_conntrack_buckets = .*#net.netfilter.nf_conntrack_buckets = ${nf_conntrack_buckets}#g" /etc/sysctl.d/99-custom.conf
 }
 
 
