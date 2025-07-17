@@ -102,7 +102,7 @@ check_arch() {
 
 install_packages_debian_ubuntu() {
     apt update && apt upgrade -y && apt autoremove -y
-    apt install -y bc gpg curl wget dnsutils net-tools bash-completion systemd-timesyncd vim nftables vnstat syslog-ng python3 qemu-guest-agent
+    apt install -y bc gpg curl wget dnsutils net-tools bash-completion systemd-timesyncd vim nftables vnstat syslog-ng python3 qemu-guest-agent inetutils-ping
 }
 
 install_packages_arch() {
