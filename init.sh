@@ -76,7 +76,7 @@ fi
 }
 
 install_packages_debian() {
-apt update && apt upgrade -y && apt autoremove -y && apt install -y bc gpg curl wget dnsutils net-tools bash-completion systemd-timesyncd vim nftables vnstat systemd-journal-remote syslog-ng python3 qemu-guest-agent
+apt update && apt upgrade -y && apt autoremove -y && apt install -y bc gpg curl wget dnsutils net-tools bash-completion systemd-timesyncd vim nftables vnstat syslog-ng python3 qemu-guest-agent
 }
 
 install_packages_arch() {
