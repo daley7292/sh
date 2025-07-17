@@ -22,14 +22,34 @@ usage() {
 parse_options() {
     while [ $# -gt 0 ]; do
         case "$1" in
-            -d) d=1 ;;
-            -h) shift; h=$1 ;;
-            -ip) shift; ip=$1 ;;
-            -dns) shift; dns=$1 ;;
-            *) echo "未知参数: $1"; usage ;;
+            -*)
+                opt="${1#-}"
+                valid=0
+                for allowed in $ALLOWED_OPTIONS; do
+                    if [ "$opt" = "$allowed" ]; then
+                        valid=1
+                        break
+                    fi
+                done
+                if [ "$valid" -eq 0 ]; then
+                    echo "未知选项: $1"
+                    usage
+                fi
+                shift
+                if [ $# -eq 0 ]; then
+                    echo "选项 -$opt 缺少参数"
+                    usage
+                fi
+                eval "$opt=\$1"
+                ;;
+            *)
+                echo "无法识别的参数: $1"
+                usage
+                ;;
         esac
         shift
     done
+
     for req in $REQUIRED_OPTIONS; do
         eval "val=\$$req"
         if [ -z "$val" ]; then
