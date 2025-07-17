@@ -270,6 +270,7 @@ configure_syslog_ng() {
     fi
     echo "正在配置 /etc/syslog-ng/syslog-ng.conf..."
     cat <<EOF >/etc/syslog-ng/syslog-ng.conf
+@version: 3.38
 @include "scl.conf"
 
 source s_local {
