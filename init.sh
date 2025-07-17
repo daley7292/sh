@@ -217,7 +217,7 @@ EOF
     else
         sed -i "s#net.ipv4.tcp_mem =.*#net.ipv4.tcp_mem = 6291456 8388608 16777216#g" /etc/sysctl.d/99-custom.conf
     fi
-
+    ln -s /etc/sysctl.d/99-custom.conf /etc/sysctl.conf
     sysctl -p &>/dev/null
 }
 
@@ -418,17 +418,24 @@ EOF
 }
 
 main() {
+    echo "开始初始化，清空 /etc/motd ..."
     echo "" >/etc/motd
 
+    echo "检测操作系统..."
     detect_os
+    echo "检测到操作系统: $OS"
 
     case "$OS" in
         debian|ubuntu)
+            echo "验证 Debian/Ubuntu 系统..."
             check_debian_ubuntu
+            echo "安装 Debian/Ubuntu 必要软件包..."
             install_packages_debian_ubuntu
             ;;
         arch)
+            echo "验证 Arch Linux 系统..."
             check_arch
+            echo "安装 Arch Linux 必要软件包..."
             install_packages_arch
             ;;
         *)
@@ -437,16 +444,38 @@ main() {
             ;;
     esac
 
+    echo "配置时间同步..."
     configure_timesync
+
+    echo "配置 systemd-resolved DNS 服务..."
     configure_resolved
+
+    echo "配置内核参数 sysctl ..."
     configure_sysctl
+
+    echo "配置系统限制（文件句柄等）..."
     configure_limits
+
+    echo "配置 systemd 系统限制..."
     configure_systemd
+
+    echo "启用 vnstat 统计服务..."
     enable_vnstat
+
+    echo "安装并配置 Docker（如指定）..."
     install_docker
+
+    echo "配置 syslog-ng 日志转发服务..."
     configure_syslog_ng
+
+    echo "设置主机名（如指定）..."
     set_hostname
+
+    echo "创建每日凌晨 4 点自动重启定时任务..."
     create_reboot_timer
+
+    echo "所有配置完成，即将重启系统..."
+    reboot
 }
 
 parse_options "$@"
