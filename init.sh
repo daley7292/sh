@@ -167,8 +167,8 @@ net.ipv4.tcp_keepalive_probes = 5
 net.ipv6.conf.all.accept_ra = 2
 net.ipv6.conf.all.autoconf = 1
 vm.swappiness = 40
-
 EOF
+ln -s /etc/sysctl.d/99-custom.conf /etc/sysctl.conf
 total_memory=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 total_memory_bytes=$((total_memory * 1024))
 total_memory_gb=$(awk "BEGIN {printf \"%.2f\", $total_memory / 1024 / 1024}")
