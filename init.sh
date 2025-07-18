@@ -421,7 +421,7 @@ EOF
 main() {
     echo "开始初始化，清空 /etc/motd ..."
     echo "" >/etc/motd
-
+    [ -d /etc/update-motd.d/ ] && sudo rm -f /etc/update-motd.d/*
     echo "检测操作系统..."
     detect_os
     echo "检测到操作系统: $OS"
